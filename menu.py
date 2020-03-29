@@ -7,19 +7,22 @@
 from db import *
 
 class Menu:
-    select_list = [1,2,3,4]
+    select_list = [1,2,3,4,5,6]
     def show_menu():
         print("Please select from the following options: \n")
         print("1. Insert new member \t2. Update existing member")
-        print("3. Delete a member \t4. Quit")
+        print("3. Show members  \t4. Select a member to view details")
+        print("5. Delete a member \t6. Quit")
 
     #calling a function from within a dictionary
     def select(arg): #python alternative for switch case
         switch =  {
             1: DB.insert_in_db, #reference the function name
             2: DB.update_member,
-            3: DB.delete_member,
-            4: exit, #builtin function
+            3: DB.show_members,
+            4: DB.view_member_details,
+            5: DB.delete_member,
+            6: exit, #builtin function
         }
         switch.get(arg, "Invalid option")() #calling the function here with ()
 
