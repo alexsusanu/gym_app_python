@@ -1,5 +1,4 @@
 #https://docs.python.org/3/library/sqlite3.html
-#Google
 
 from menu import *
 from db import *
@@ -15,8 +14,6 @@ while flag:
         user_input = int(input("Select an option: "))
     else: 
         Menu.select(user_input)
-        #if user_input == 1:
-        #    insert_in_db()
         flag = False
 
 
