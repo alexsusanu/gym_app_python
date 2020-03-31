@@ -17,6 +17,7 @@ from time_functions import *
 class DB:
     connection = sqlite3.connect('database.db') #connect to db/create new otherwise
     cursor = connection.cursor()
+    
 
     def insert_in_db():
         DB.cursor.execute("""
@@ -40,8 +41,7 @@ class DB:
         DB.connection.commit() #save changes to the db
         DB.connection.close() #close the db
 
-    def show_members():
-        DB.connection
+    def show_members(self):
         DB.cursor.execute("""   
                             SELECT name
                             FROM Members 
@@ -50,14 +50,21 @@ class DB:
         for row in rows:
             print(row)
 
-    def update_member(): 
+    def update_member(name, new_name):
+        sql = """
+        UPDATE Members
+        SET name = ?
+        WHERE name = ?
+        """
+        DB.cursor.execute(sql,(new_name, name))
+        DB.connection.commit()
+        DB.connection.close()
         print("Member updated")
 
     def view_member_details():
         print("Member details")
 
     def delete_member(name): #to add arg when calling
-        DB.connection
         sql = """
         DELETE FROM Members
         WHERE name = ?

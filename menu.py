@@ -24,9 +24,9 @@ class Menu:
             5: DB.delete_member,
             6: exit, #builtin function
         }
-        if arg == 5:
-            print("Insert name to delete: ")
-            switch.get(arg, "Invalid option")(input()) #calling the function here with ()
+        if arg == 2:
+            print("Insert name to update: ")
+            switch.get(arg, "Invalid option")(input(), input()) #calling the function here with ()
         else:
             switch.get(arg, "Invalid option")() #calling the function here with ()
 
