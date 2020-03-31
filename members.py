@@ -9,7 +9,8 @@ class Member: #a category of things that have common properties
     def __init__(self, name, surname, age):
         self.name = name
         self.surname = surname
-        self.age = age
+        self.age = int(age)
+
     
 
     

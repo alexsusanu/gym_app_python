@@ -43,10 +43,10 @@ class DB:
     def show_members():
         DB.connection
         DB.cursor.execute("""   
-                            SELECT * 
+                            SELECT name
                             FROM Members 
                         """)
-        rows = DB.cursor.fetchall()
+        rows = DB.cursor.fetchall() #fetch one or all
         for row in rows:
             print(row)
 
@@ -56,5 +56,13 @@ class DB:
     def view_member_details():
         print("Member details")
 
-    def delete_member():
+    def delete_member(name): #to add arg when calling
+        DB.connection
+        sql = """
+        DELETE FROM Members
+        WHERE name = ?
+        """
+        DB.cursor.execute(sql, [(name)])                
+        DB.connection.commit()
+        DB.connection.close()
         print("Member deleted")
