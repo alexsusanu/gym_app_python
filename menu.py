@@ -36,12 +36,19 @@ class Menu:
 
     def main_menu():#TO DO
         Menu()
-        user_input = int(input("Select an option: "))
-        flag = True
-        while flag:
-            if user_input not in Menu.select_list:
-                print("Please choose from the options shown")
-                user_input = int(input("Select an option: "))
-            else: 
-                Menu.select(user_input)
-                flag = False
+        #user_input = input("Select an option: ")
+        while True:
+            try:
+                user_input = int(input("Select an option #: ")) #TO REVIEW THIS
+                if user_input not in Menu.select_list:
+                    print("Please choose from the options shown")
+                    user_input = input("Select an option $: ")
+                else: 
+                    Menu.select(user_input)
+                    print("For main menu type 0 (zero) or 8 to quit: ")
+                    user_input = input()
+            except ValueError:
+                print("Not a number")
+                continue
+            #else:
+            #    break
