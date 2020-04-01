@@ -7,12 +7,16 @@
 from db import *
 
 class Menu:
-    select_list = [1,2,3,4,5,6]
-    def show_menu():
-        print("Please select from the following options: \n")
-        print("1. Insert new member \t2. Update existing member")
-        print("3. Show members  \t4. Select a member to view details")
-        print("5. Delete a member \t6. Quit")
+    select_list = [0,1,2,3,4,5,6,7,8]
+    def __init__(self):
+        print(60 * "-")
+        print("\tPlease select from the following options:")
+        print(60 * "-")
+        print("\t*** 0 (zero) to return to main menu ***")
+        print("1. Insert new member \t\t2. Update existing member")
+        print("3. Show members  \t\t4. Select a member to view details")
+        print("5. Delete a member \t\t6. Expired memberships")
+        print("7. Soon to expire memberships \t8. Quit")
 
     #calling a function from within a dictionary
     def select(arg): #python alternative for switch case
@@ -22,12 +26,22 @@ class Menu:
             3: DB.show_members,
             4: DB.view_member_details,
             5: DB.delete_member,
-            6: exit, #builtin function
+            6: DB.expired_memberships,
+            7: DB.soon_to_expire,
+            8: exit, #builtin function
+            0: Menu.main_menu
         }
-        if arg == 2:
-            print("Insert name to update: ")
-            switch.get(arg, "Invalid option")(input(), input()) #calling the function here with ()
-        else:
-            switch.get(arg, "Invalid option")() #calling the function here with ()
+        switch.get(arg, "Invalid option")() #calling the function here with ()
 
 
+    def main_menu():#TO DO
+        Menu()
+        user_input = int(input("Select an option: "))
+        flag = True
+        while flag:
+            if user_input not in Menu.select_list:
+                print("Please choose from the options shown")
+                user_input = int(input("Select an option: "))
+            else: 
+                Menu.select(user_input)
+                flag = False

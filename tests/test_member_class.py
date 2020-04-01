@@ -10,10 +10,14 @@ class TestMemberClass(unittest.TestCase):
         name = 'john'
         surname = "smith"
         age = 714
-
+        
+        #assert that:
+        #the name and surname are strings
+        #age is a int
+        #message not a string/int if otherwise
         self.assertIsInstance(name, str, "Not a string")
         self.assertIsInstance(surname, str)
-        self.assertIsInstance(age, int)
+        self.assertIsInstance(age, int, "Not an int")
 
 unittest.main()
     
