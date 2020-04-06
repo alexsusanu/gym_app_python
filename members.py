@@ -6,11 +6,14 @@
 #constructor / __init__ -> used to initialize object (to set initial values) 
 
 class Member: #a category of things that have common properties
-    def __init__(self, name, surname, age):
+    def __init__(self, name, surname):
         self.name = name
         self.surname = surname
-        self.age = int(age)
 
-    
+    def print_name(self):
+        return self.name
 
-    
+    def print_surname(self):
+        return self.surname
+
+

@@ -4,7 +4,7 @@
 #elements inside __init__ belong to the object (instance of the class)/(self)
 #attribute -> inner data of an object (inside vars, methods)
 
-from db import *
+from modules.db import *
 
 class Menu:
     select_list = [0,1,2,3,4,5,6,7,8]
@@ -21,20 +21,20 @@ class Menu:
     #calling a function from within a dictionary
     def select(arg): #python alternative for switch case
         switch =  {
-            1: DB.insert_in_db, #reference the function name
-            2: DB.update_member,
-            3: DB.show_members,
-            4: DB.view_member_details,
-            5: DB.delete_member,
-            6: DB.expired_memberships,
-            7: DB.soon_to_expire,
+            1: insert_in_db, #reference the function name
+            2: update_member,
+            3: show_members,
+            4: view_member_details,
+            5: delete_member,
+            6: expired_memberships,
+            7: soon_to_expire,
             8: exit, #builtin function
-            0: Menu.main_menu
+            #0: Menu.main_menu
         }
         switch.get(arg, "Invalid option")() #calling the function here with ()
 
 
-    def main_menu():#TO DO
+    '''def main_menu():#TO DO
         Menu()
         #user_input = input("Select an option: ")
         while True:
@@ -52,3 +52,4 @@ class Menu:
                 continue
             #else:
             #    break
+    '''
