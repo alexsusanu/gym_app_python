@@ -14,7 +14,7 @@
 import sqlite3 #import sqlite3 library
 
 from members import *
-#from time_functions import *
+from time_functions import *
 
 connection = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
 cursor = connection.cursor()
@@ -23,7 +23,7 @@ sql_create_table = """
                     CREATE TABLE IF NOT EXISTS Members 
                     (
                         MEMBER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        FIST_NAME VARCHAR(30) NOT NULL,
+                        FIRST_NAME VARCHAR(30) NOT NULL,
                         LAST_NAME VARCHAR(30) NOT NULL,
                         PHONE INTEGER,
                         EMAIL VARCAHR(30),
@@ -32,24 +32,27 @@ sql_create_table = """
                     );  
                     """
 sql_insert_in_db = """
-                    INSERT INTO Members(FIRST_NAME, LAST_NAME)
-                    VALUES (?, ?)
+                    INSERT INTO Members(FIRST_NAME, LAST_NAME, PHONE, EMAIL, JOINING_DATE, ENDING_DATE)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     """
 
 sql_show_members = """SELECT FIRST_NAME, LAST_NAME FROM Members"""
 
+   
 def create_table():
-    connection()
     cursor.execute(sql_create_table)
-    cursor.commit()
 
 
 def insert_in_db():
-    member = Member(input("Insert name: "), input("Insert surname: "))
-    args = member.name, member.surname
+    first_name = Member.first_name()
+    last_name = Member.last_name()
+    phone_number = Member.phone_number()
+    email = Member.email()
+    args = first_name, last_name, phone_number, email, date_format_dmy(), date_end_membership()
     cursor.execute(sql_insert_in_db, args)
     connection.commit() #save changes to the db
     connection.close() #close the db
+    print("{0} {1} member added to database on {2} at {3}".format(first_name, last_name, date_format_dmy(), time_hm))
 
 def show_members():
     print(('%-10s %10s') % ('NAME', 'SURNAME'.ljust(15)))
@@ -60,6 +63,7 @@ def show_members():
         print("%-10s %10s" % (row[0].title(), row[1].title().ljust(15)))
     print()
     print("Total members: %d" % len(rows))
+
 def update_member():
     print("Insert old name: ")
     name = input()

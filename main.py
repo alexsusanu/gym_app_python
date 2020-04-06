@@ -3,6 +3,7 @@
 from menu import *
 from modules.db import *
 
+create_table()
 Menu()
 user_input = int(input())
 Menu.select(user_input)

@@ -1,9 +1,22 @@
-#https://docs.python.org/3/library/datetime.html?highlight=strftime#strftime-and-strptime-behavior
+#https://docs.python.org/5/library/datetime.html?highlight=strftime#strftime-and-strptime-behavior
+#date format -> Day_of_week day-month_string-year (Mon 06-April-2020)
+#time format -> H:m am/pm
+#date / time -> not formatted with strftime
+#date_dmy / time_hm -> formatted to string (dmy -> day month year / hm -> hour min)
+
 import datetime
 
-date_dmy = datetime.datetime.now().strftime("%a %d-%B-%Y")
-time_hm = datetime.datetime.now().strftime("%I:%m%p")
+date = datetime.datetime.now()
+date_30 = date + datetime.timedelta(days=30)
 
+def date_format_dmy():
+    return date.strftime("%a %d-%B-%Y")
+
+def date_end_membership():
+    return date_30.strftime("%a %d-%B-%Y")
+
+time = datetime.datetime.now()
+time_hm = datetime.datetime.now().strftime("%I:%M %p")
 '''
 datetime functions
 
