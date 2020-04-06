@@ -35,4 +35,3 @@ class Member: #a category of things that have common properties
         print("Insert EMAIL ADDRESS: ")
         email = input()
         return email
-

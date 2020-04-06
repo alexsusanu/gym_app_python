@@ -52,7 +52,7 @@ def insert_in_db():
     cursor.execute(sql_insert_in_db, args)
     connection.commit() #save changes to the db
     connection.close() #close the db
-    print("{0} {1} member added to database on {2} at {3}".format(first_name, last_name, date_format_dmy(), time_hm))
+    print("{0} {1} member added to database on {2} at {3}".format(first_name, last_name, date_format_dmy(), time_format_hm()))
 
 def show_members():
     print(('%-10s %10s') % ('NAME', 'SURNAME'.ljust(15)))
