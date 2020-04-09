@@ -2,8 +2,10 @@
 
 from menu import *
 from modules.db import *
+from definitions import create_table_sql
 
-create_table()
+run_sql_script(create_table_sql)
+attributes()
 Menu()
 user_input = int(input())
 Menu.select(user_input)

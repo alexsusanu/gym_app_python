@@ -15,33 +15,42 @@ import sqlite3 #import sqlite3 library
 
 from members import *
 from time_functions import *
+from definitions import show_members_sql
+from definitions import view_member_sql
+from definitions import select_all_sql
+
+
 
 connection = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
 cursor = connection.cursor()
 
-sql_create_table = """
-                    CREATE TABLE IF NOT EXISTS Members 
-                    (
-                        MEMBER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        FIRST_NAME VARCHAR(30) NOT NULL,
-                        LAST_NAME VARCHAR(30) NOT NULL,
-                        PHONE INTEGER,
-                        EMAIL VARCAHR(30),
-                        JOINING_DATE DATE,
-                        ENDING_DATE DATE 
-                    );  
-                    """
 sql_insert_in_db = """
                     INSERT INTO Members(FIRST_NAME, LAST_NAME, PHONE, EMAIL, JOINING_DATE, ENDING_DATE)
                     VALUES (?, ?, ?, ?, ?, ?)
                     """
 
-sql_show_members = """SELECT FIRST_NAME, LAST_NAME FROM Members"""
+sql_update_member = """
+                    UPDATE Members
+                    SET FIRST_NAME = ?, LAST_NAME = ?
+                    WHERE FIRST_NAME = ? AND LAST_NAME = ?
+                    """
 
-   
-def create_table():
-    cursor.execute(sql_create_table)
 
+def run_sql_script(filename, *args):
+    file = open(filename, 'r')
+    sql_file = file.read()
+    file.close()
+    cursor.execute(sql_file, *args)
+
+  
+def attributes():
+    run_sql_script(select_all_sql)
+    descriptions = [description[0] for description in cursor.description]
+    #print(descriptions) 
+    #print(len(cursor.description))
+    return descriptions
+
+ 
 
 def insert_in_db():
     first_name = Member.first_name()
@@ -57,7 +66,7 @@ def insert_in_db():
 def show_members():
     print(('%-10s %10s') % ('NAME', 'SURNAME'.ljust(15)))
     print()
-    cursor.execute(sql_show_members)
+    cursor.execute(run_sql_script('sql_scripts/show_members.sql'))
     rows = cursor.fetchall() #fetch one or all
     for row in rows:
         print("%-10s %10s" % (row[0].title(), row[1].title().ljust(15)))
@@ -65,39 +74,22 @@ def show_members():
     print("Total members: %d" % len(rows))
 
 def update_member():
-    print("Insert old name: ")
-    name = input()
-
-    print("Insert new name: ")
-    new_name = input()
-
-    sql = """
-            UPDATE Members
-            SET FIRST_NAME = ?, LAST_NAME = ?
-            WHERE FIRST_NAME = ? AND LAST_NAME = ?
-          """
     cursor.execute(sql,(new_name, name))
     connection.commit()
     connection.close()
     print("Member updated")
 
 def view_member_details():
-    print("Insert name: ")
-    name = input()
+    first_name = Member.first_name()
+    last_name = Member.last_name()
 
-    print("Insert surname: ")
-    surname = input()
-
-    sql = """
-    SELECT * FROM Members
-    WHERE name = ?
-    AND surname = ?
-    """
-    cursor.execute(sql, (name, surname))
-    print(cursor.fetchall())
-    connection.commit()
-    connection.close()
-    print("Member details")
+    run_sql_script(view_member_sql, (first_name, last_name)) #select all members with the same first and last name
+    rows = cursor.fetchall()
+    description = attributes() #calling attributes function to get all columns names
+    for row in rows:
+        for i in range(0, len(description)):
+            print("%s: %s" % (description[i], row[i]))
+        print("---------------------------------------")
 
 def delete_member(): #to add arg when calling
     print("Insert name to delete: ")

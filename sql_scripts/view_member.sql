@@ -1,0 +1,4 @@
+--1.1
+SELECT * FROM Members
+	WHERE FIRST_NAME = ?
+	AND LAST_NAME = ?;
