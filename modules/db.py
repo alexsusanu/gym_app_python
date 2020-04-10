@@ -18,6 +18,11 @@ from collections import defaultdict
 
 from members import *
 from time_functions import *
+
+from modules.func import quit_or_menu
+from modules.func import print_stars
+from modules.func import check_input
+
 from definitions import show_members_sql
 from definitions import view_member_sql
 from definitions import select_all_sql
@@ -25,7 +30,7 @@ from definitions import insert_sql
 from definitions import delete_member_sql
 from definitions import update_member_sql
 
-quit = ('q', 'Q', 'Quit', 'quit', 'QUIT')
+#quit = ('q', 'Q', 'Quit', 'quit', 'QUIT')
 
 connection = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
 cursor = connection.cursor()
@@ -109,46 +114,53 @@ def view_member_details():
 
 def member_exists(first_name, last_name):
     description = attributes()
-    members_array = []
-    member_ids = []
 
-    run_sql_script(view_member_sql, (first_name, last_name))
-    members = cursor.fetchall()
-    for member in members:
-        members_array.append(member)
+    def members_array_id():
+        members_array = []
+        member_id = []
 
-    if len(members_array) >= 1:
-        print("1 member found") if len(members_array) == 1 else print("%s members found" % len(members_array))    
+        run_sql_script(view_member_sql, (first_name, last_name))
+        members = cursor.fetchall()
 
-        for member in members_array:
+        for member in members:
+            member_id.append(member[0])
+        return members, member_id
+    members, member_id = members_array_id()
+
+    def get_attributes():    
+        print_stars()
+        for member in members:
             for i in range(0, len(description)):
-                print("%s %s" % (description[i], member[i]))
-            member_ids.append(member[0])
-        
-        print("Please select from the following IDs to continue: %s" % member_ids)
-        user_input = input()
-        flag = True
-        while flag:
-            if user_input.isdigit() and int(user_input) in member_ids:
-                print("You selected %s" % user_input)
-                flag = False
-            else:
-                print("Invalid ID. Retry or q to quit:", end=" ") #removes \n
-                user_input = input()
-                if user_input in quit:
-                    break;
-    else:
-       print("Member not found") 
-    
-def quit_or_menu(user_input):
-    quit = ('q', 'Q', 'Quit', 'quit', 'QUIT')
-    m = Menu() pass #to redo menu func in menu file first
+                print("%s: %s" % (description[i], member[i]))
+            print_stars()
+
+    def one_member():
+        one_member = False
+        if len(member_id) == 1 : one_member = True
+        return one_member
+    one_member = one_member()    
+
+    def plus_member():
+        if len(member_id) > 1:
+            print("More than 1 member found.")
+            get_attributes()
+            print("Type member's ID to delete. Select %s | " % member_id, end=" ")
+            user_input = input()
+            check_input(user_input, member_id)
+    plus_member = plus_member()
+
+    def no_member():
+        no_member = False
+        if len(member_id) == 0 : no_member = True
+        return no_member
+    no_member = no_member()
 
 def delete_member():
 
     first_name = Member.first_name()
     last_name = Member.last_name()
-    
+    print_stars()
+ 
     member_exists(first_name, last_name)
      
     #run_sql_script(delete_member_sql, (first_name, last_name))
