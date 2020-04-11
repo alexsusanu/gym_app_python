@@ -3,7 +3,9 @@
 #time format -> H:m am/pm
 #date / time -> not formatted with strftime
 #date_dmy / time_hm -> formatted to string (dmy -> day month year / hm -> hour min)
-
+"""
+time functions
+"""
 import datetime
 
 date = datetime.datetime.now()
@@ -18,14 +20,3 @@ def date_end_membership():
 
 def time_format_hm():
     return datetime.datetime.now().strftime("%I:%M %p")
-'''
-datetime functions
-
-strftime() -> converts time in string
-format codes:
-%a -> Sat
-%A -> Saturday
-%b -> Jan
-%B -> January
-%p -> am/pm
-'''

@@ -46,4 +46,3 @@ def from_dict_by_id(dictionary, by_id):
                 print("%s: %s" % (key, value))
         print_stars()
     #return dictionary[index]['FIRST_NAME'], dictionary[index]['LAST_NAME']
-    

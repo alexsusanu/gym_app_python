@@ -1,12 +1,14 @@
+"""
+files path
+"""
 import os
 
-root_dir = os.path.dirname(os.path.abspath(__file__)) #project root
-create_table_sql = os.path.join(root_dir, 'sql_scripts/create_table.sql')
-show_members_sql = os.path.join(root_dir, 'sql_scripts/show_members.sql')
-view_member_sql = os.path.join(root_dir, 'sql_scripts/view_member.sql')
-select_all_sql = os.path.join(root_dir, 'sql_scripts/select_all.sql')
-insert_sql = os.path.join(root_dir, 'sql_scripts/insert.sql')
-delete_member_sql = os.path.join(root_dir, 'sql_scripts/delete_member.sql')
-update_member_sql = os.path.join(root_dir, 'sql_scripts/update_member.sql')
-delete_id_sql = os.path.join(root_dir, 'sql_scripts/delete_id.sql')
-
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) #project root
+CREATE_TABLE_SQL = os.path.join(ROOT_DIR, 'sql_scripts/create_table.sql')
+SHOW_MEMBERS_SQL = os.path.join(ROOT_DIR, 'sql_scripts/show_members.sql')
+VIEW_MEMBER_SQL = os.path.join(ROOT_DIR, 'sql_scripts/view_member.sql')
+SELECT_ALL_SQL = os.path.join(ROOT_DIR, 'sql_scripts/select_all.sql')
+INSERT_SQL = os.path.join(ROOT_DIR, 'sql_scripts/insert.sql')
+DELETE_MEMBER_SQL = os.path.join(ROOT_DIR, 'sql_scripts/delete_member.sql')
+UPDATE_MEMBER_SQL = os.path.join(ROOT_DIR, 'sql_scripts/update_member.sql')
+DELETE_ID_SQL = os.path.join(ROOT_DIR, 'sql_scripts/delete_id.sql')

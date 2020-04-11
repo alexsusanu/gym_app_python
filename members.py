@@ -3,7 +3,7 @@
 
 #object -> instance of a class
 #self -> refers to the object that is being worked upon, the instance of the class
-#constructor / __init__ -> used to initialize object (to set initial values) 
+#constructor / __init__ -> used to initialize object (to set initial values)
 
 class Member: #a category of things that have common properties
     #def __init__(self, first_name, last_name, phone_number, email):
