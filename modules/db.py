@@ -91,7 +91,7 @@ def show_members():
     print("Total members: %d" % len(rows))
 
 
-def update_member():
+def update_member(): #TO CHECK IF MEMBER EXISTS ECC
     first_name = Member.first_name()
     last_name = Member.last_name()
 
@@ -100,7 +100,7 @@ def update_member():
     connection.close()
     print("Member updated")
 
-def view_member_details():
+def view_member_details(): #SAME AS ABOVE TO CHECK IF MEMBER EXISTS ECC
     first_name = Member.first_name()
     last_name = Member.last_name()
 
@@ -142,6 +142,7 @@ def member_exists(first_name, last_name):
 
     def plus_member():
         plus_member = False
+        id_to_del = None
         if len(member_id) > 1:
             print("More than 1 member found.")
             get_attributes()
