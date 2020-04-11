@@ -1,9 +1,9 @@
 #https://www.sqlitetutorial.net/sqlite-python/sqlite-python-select/
 
-#cursor:  
+#cursor: 
 #symbol that indicates the cursor / iterator
 #an object used to pinpoint records in a database
-#shows the specific record in the database that is being worked upon 
+#shows the specific record in the database that is being worked upon
 
 #cursor -> static variable
 #self.cursor -> instance variable
@@ -22,7 +22,6 @@ from time_functions import *
 from modules.func import quit_or_menu
 from modules.func import print_stars
 from modules.func import check_input
-from modules.func import return_by_id
 from modules.func import send_to_dict
 from modules.func import from_dict_by_id
 
@@ -32,6 +31,7 @@ from definitions import select_all_sql
 from definitions import insert_sql
 from definitions import delete_member_sql
 from definitions import update_member_sql
+from definitions import delete_id_sql
 
 connection = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
 cursor = connection.cursor()
@@ -126,7 +126,8 @@ def member_exists(first_name, last_name):
 
         return members, member_id
     members, member_id = members_array_id()
-    def get_attributes():    #TO REVIEW
+
+    def get_attributes():
         description = attributes()
         print_stars()
         for member in members:
@@ -147,12 +148,12 @@ def member_exists(first_name, last_name):
                 get_attributes()
                 print("Type member's ID to delete. Select %s | " % member_id, end=" ")
                 user_input = input()
-                check_input(user_input, member_id)
+                id_to_del = check_input(user_input, member_id)
                 dictionary = send_to_dict(members, attributes())
                 from_dict_by_id(dictionary, user_input)
                 plus_member = True
-            return plus_member
-    plus_member = plus_member()
+            return plus_member, id_to_del 
+    plus_member, id_to_del = plus_member()
     
     def no_member():
         no_member = False
@@ -160,18 +161,17 @@ def member_exists(first_name, last_name):
         return no_member
     no_member = no_member()
 
-    return one_member, plus_member, no_member
+    return one_member, plus_member, id_to_del, no_member
 
 def delete_member():
     first_name = Member.first_name()
     last_name = Member.last_name()
     print_stars()
  
-    one_member, plus_member, no_member = member_exists(first_name, last_name)
-    print("++++++++++")
+    one_member, plus_member, id_to_del, no_member = member_exists(first_name, last_name)
     if plus_member:
-        print(plus_member)
-        #run_sql_script(delete_member_sql, (first_name, last_name))
+        run_sql_script(delete_id_sql, (id_to_del,))
+        print("Member deleted")
     if one_member:
         run_sql_script(delete_member_sql, (first_name, last_name))
         print("Member deleted")
@@ -179,9 +179,8 @@ def delete_member():
         print("No member found, check your spelling. [q to quit, m for main menu]")     
         quit_or_menu(user_input = input())
      
-    #run_sql_script(delete_member_sql, (first_name, last_name))
-    #connection.commit()
-    #connection.close()
+    connection.commit()
+    connection.close()
 
 def expired_memberships(): pass
 def soon_to_expire(): pass

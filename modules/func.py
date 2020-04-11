@@ -26,11 +26,6 @@ def check_input(user_input, array):
             return user_input
             flag = False
 
-def return_by_id(user_input, arr): #TO DELETE
-    for user_input in arr:
-        for index in arr:
-            return index[1], index[2]
-
 #desc => description, use as keys in dict
 #arr => members list from sql
 def send_to_dict(arr, desc):
@@ -49,3 +44,6 @@ def from_dict_by_id(dictionary, by_id):
         if int(by_id) in dictionary[index].values():
             for key, value in dictionary[index].items():
                 print("%s: %s" % (key, value))
+        print_stars()
+    #return dictionary[index]['FIRST_NAME'], dictionary[index]['LAST_NAME']
+    
