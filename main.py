@@ -5,7 +5,7 @@ from modules.db import *
 from definitions import create_table_sql
 
 run_sql_script(create_table_sql)
-attributes()
+#attributes()
 Menu()
 user_input = int(input())
 Menu.select(user_input)
