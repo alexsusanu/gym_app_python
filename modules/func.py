@@ -86,3 +86,17 @@ def check_email(user_input):
             quit_or_menu(user_input)
         else:
             return user_input
+
+def yes_no(answer):
+    """ y|n to quit """
+    arr_y = ['yes', 'y']
+    arr_n = ['no', 'n']
+ 
+    while True:
+        if answer.lower() in arr_y:
+            return True
+        elif answer.lower() in arr_n:
+            return False
+        else:
+            print("y|n answer. Retry: ", end=" ")
+            answer = input()

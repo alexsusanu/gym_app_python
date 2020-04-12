@@ -40,3 +40,15 @@ class Member: #a category of things that have common properties
         user_input = input()
         return check_email(user_input)
 
+    @staticmethod
+    def new_first_name():
+        print("Insert new last name: ", end=" ")
+        user_input = input()
+        return check_alpha(user_input)
+
+    @staticmethod
+    def new_last_name():
+        print("Insert new last name: ", end=" ")
+        user_input = input()
+        return check_alpha(user_input)
+

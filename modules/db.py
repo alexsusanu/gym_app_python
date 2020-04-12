@@ -23,6 +23,7 @@ from modules.func import print_stars
 from modules.func import check_input
 from modules.func import send_to_dict
 from modules.func import from_dict_by_id
+from modules.func import yes_no
 
 from definitions import VIEW_MEMBER_SQL
 from definitions import SELECT_ALL_SQL
@@ -57,13 +58,83 @@ def get_attributes(arr, att):
             print("%s: %s" % (element, elm[i]))
         print_stars()
 
+def member_exists(first_name, last_name):
+    members, member_id = members_array_id()
+    member_already = member_already()
+    if member_already:
+        view_matches()
+    else:
+        return False
+
+def members_array_id():
+    """ add all members in array with a separate member id array """
+    member_id = []
+
+    run_sql_script(VIEW_MEMBER_SQL, (first_name, last_name))
+    members = CURSOR.fetchall()
+
+    for member in members:
+        member_id.append(member[0])
+
+    return members, member_id
+
+def member_already():
+    """ check if member already exists """
+    """ returns true false only"""
+    member_already = False
+    if member_id: member_already = True
+    return member_already
+
+def view_matches():
+    if len(member_id) >= 1:
+        print("More than 1 member exists with same name and surname.")
+        print("To view all matches type 'y'")
+        print("Type 'n' to quit or main menu. | ", end=" ")
+        user_input = input()
+        yes_no(user_input)
+        if yes_no:
+            get_attributes(members, attributes())
+            print("If you wish to delete or update, type 'y'")
+            print("Type 'n' to quit or main menu", end=" ")
+            user_input = input()
+            yes_no(user_input)
+            if yes_no:
+                id_to_del = id_to_del()
+            else:
+                print("q to quit, m for main menu")
+                quit_or_menu()
+        else:
+            print("q to quit, m for main menu")
+            quit_or_menu()
+    else:
+        return False
+
+def id_to_del():
+    """ id to delete or update """
+    id_to_del = None
+    print("Type member's ID to delete or update. Select %s | " % member_id)
+    user_input = input()
+    id_to_del = check_input(user_input, member_id)
+    dictionary = send_to_dict(members, attributes())
+    from_dict_by_id(dictionary, user_input)
+    return id_to_del
+id_to_del = id_to_del()
+
 def insert_in_db():
     """ insert member in db """
     first_name = Member.first_name()
     last_name = Member.last_name()
     phone_number = Member.phone_number()
     email = Member.email()
-
+        
+    #member_already = member_exists(first_name, last_name)
+    #if member_aleady:
+    #    print("Do you wish to delete or update? You will be directed to main menu| ", end=" ")
+    #    user_input = input()
+    #    yes_no(user_input)
+    #    if yes_no:
+    #        Menu()
+    #else:
     run_sql_script(INSERT_SQL, (first_name, last_name, phone_number, email, date_format_dmy(), date_end_membership()))
 
     CONNECTION.commit()
@@ -98,31 +169,17 @@ def update_member(): #TO CHECK IF MEMBER EXISTS ECC
     first_name = Member.first_name()
     last_name = Member.last_name()
 
-    one_member, plus_member, id_to_del, no_member = member_exists(first_name, last_name)
+    member_exists(first_name, last_name)
     if not no_member:
         print("Member doesnt exist. q to quit or m for main menu")
         user_input = input()
         quit_or_menu(user_input)
     elif plus_member:
         new_first_name, new_last_name, new_phone_number, new_email = update()
-        #print_stars()
-        #print("Insert NEW details:")
-        #print_stars()
-        #new_first_name = Member.first_name()
-        #new_last_name = Member.last_name()
-        #new_phone_number = Member.phone_number()
-        #new_email = Member.email()
         run_sql_script(UPDATE_ID_SQL, (new_first_name, new_last_name, new_phone_number, new_email, first_name,
         last_name, id_to_del))
     else:
         new_first_name, new_last_name, new_phone_number, new_email = update()
-        #print_stars()
-        #print("Insert NEW details:")
-        #print_stars()
-        #new_first_name = Member.first_name()
-        #new_last_name = Member.last_name()
-        #new_phone_number = Member.phone_number()
-        #new_email = Member.email()
         run_sql_script(UPDATE_MEMBER_SQL, (new_first_name, new_last_name, new_phone_number, new_email, first_name, last_name))
     CONNECTION.commit()
     CONNECTION.close()
@@ -136,53 +193,6 @@ def view_member_details(): #SAME AS ABOVE TO CHECK IF MEMBER EXISTS ECC
     rows = CURSOR.fetchall()
     get_attributes(rows, attributes())
 
-def member_exists(first_name, last_name):
-    """ main func to check if a member exists, inner func descriptions below """
-
-    def members_array_id():
-        """ add all members in array with a separate member id array """
-        member_id = []
-
-        run_sql_script(VIEW_MEMBER_SQL, (first_name, last_name))
-        members = CURSOR.fetchall()
-
-        for member in members:
-            member_id.append(member[0])
-
-        return members, member_id
-    members, member_id = members_array_id()
-
-    def one_member():
-        """ check if only 1 hit found """
-        one_member = False
-        if len(member_id) == 1: one_member = True
-        return one_member
-    one_member = one_member()
-
-    def plus_member():
-        """ check if more than one member with same name and surname, return with id to delete """
-        plus_member = False
-        id_to_del = None
-        if len(member_id) > 1:
-            print("More than 1 member found.")
-            get_attributes(members, attributes())
-            print("Type member's ID to delete or update. Select %s | " % member_id)
-            user_input = input()
-            id_to_del = check_input(user_input, member_id)
-            dictionary = send_to_dict(members, attributes())
-            from_dict_by_id(dictionary, user_input)
-            plus_member = True
-        return plus_member, id_to_del
-    plus_member, id_to_del = plus_member()
-
-    def no_member():
-        """ evaluates to True if member not in db """
-        no_member = False
-        if member_id: no_member = True
-        return no_member
-    no_member = no_member()
-
-    return one_member, plus_member, id_to_del, no_member
 
 def delete_member():
     """ self explanatory """
