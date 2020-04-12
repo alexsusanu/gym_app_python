@@ -29,6 +29,7 @@ from definitions import SELECT_ALL_SQL
 from definitions import INSERT_SQL
 from definitions import DELETE_MEMBER_SQL
 from definitions import UPDATE_MEMBER_SQL
+from definitions import UPDATE_ID_SQL
 from definitions import DELETE_ID_SQL
 
 CONNECTION = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
@@ -78,8 +79,22 @@ def show_members(): #TO DO modify to get only name surname
     get_attributes(rows, attributes())
     print("Total members: %d" % len(rows))
 
+def update():
+    print_stars()
+    print("Insert NEW details:")
+    print_stars()
+    first = Member.first_name()
+    last = Member.last_name()
+    phone = Member.phone_number()
+    email = Member.email()
+    return first, last, phone, email
+    
+
 def update_member(): #TO CHECK IF MEMBER EXISTS ECC
     """ self explanatory """
+    print_stars()
+    print("Previous first and last name to update")
+    print_stars()
     first_name = Member.first_name()
     last_name = Member.last_name()
 
@@ -88,13 +103,29 @@ def update_member(): #TO CHECK IF MEMBER EXISTS ECC
         print("Member doesnt exist. q to quit or m for main menu")
         user_input = input()
         quit_or_menu(user_input)
+    elif plus_member:
+        new_first_name, new_last_name, new_phone_number, new_email = update()
+        #print_stars()
+        #print("Insert NEW details:")
+        #print_stars()
+        #new_first_name = Member.first_name()
+        #new_last_name = Member.last_name()
+        #new_phone_number = Member.phone_number()
+        #new_email = Member.email()
+        run_sql_script(UPDATE_ID_SQL, (new_first_name, new_last_name, new_phone_number, new_email, first_name,
+        last_name, id_to_del))
     else:
-        new_first_name = Member.new_first_name()
-        new_last_name = Member.new_last_name()
-        run_sql_script(UPDATE_MEMBER_SQL, (new_first_name, new_last_name, first_name, last_name))
-        CONNECTION.commit()
-        CONNECTION.close()
-        print("Member updated")
+        new_first_name, new_last_name, new_phone_number, new_email = update()
+        #print_stars()
+        #print("Insert NEW details:")
+        #print_stars()
+        #new_first_name = Member.first_name()
+        #new_last_name = Member.last_name()
+        #new_phone_number = Member.phone_number()
+        #new_email = Member.email()
+        run_sql_script(UPDATE_MEMBER_SQL, (new_first_name, new_last_name, new_phone_number, new_email, first_name, last_name))
+    CONNECTION.commit()
+    CONNECTION.close()
 
 def view_member_details(): #SAME AS ABOVE TO CHECK IF MEMBER EXISTS ECC
     """ self explanatory """
@@ -135,7 +166,7 @@ def member_exists(first_name, last_name):
         if len(member_id) > 1:
             print("More than 1 member found.")
             get_attributes(members, attributes())
-            print("Type member's ID to delete. Select %s | " % member_id)
+            print("Type member's ID to delete or update. Select %s | " % member_id)
             user_input = input()
             id_to_del = check_input(user_input, member_id)
             dictionary = send_to_dict(members, attributes())

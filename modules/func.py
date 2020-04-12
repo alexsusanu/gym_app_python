@@ -1,5 +1,7 @@
 """ mix function to avoid repetion """
 
+import re
+
 def quit_or_menu(user_input):
     """ quit or main menu """
     quit_arr = ('q', 'Q', 'Quit', 'quit', 'QUIT')
@@ -50,3 +52,37 @@ def from_dict_by_id(dictionary, by_id):
                 print("%s: %s" % (key, value))
         print_stars()
     #return dictionary[index]['FIRST_NAME'], dictionary[index]['LAST_NAME']
+
+def check_alpha(user_input):
+    """ check name typed is alpha """
+    while True:
+        if user_input.isalpha():
+            return user_input.title()
+        else:
+            print("Letters only. q to quit or m for menu")
+            print("Try again: ", end=" ")
+            user_input = input()
+            quit_or_menu(user_input)
+
+def check_digit(user_input):
+    """ check is digit only """
+    while True:
+        if user_input.isdigit():
+            return user_input
+        else:
+            print("Digits only. q to quit or m for menu")
+            print("Try again: ", end=" ")
+            user_input = input()
+            quit_or_menu(user_input)
+
+def check_email(user_input):
+    """ regex check email format """
+    """ note the 'space' after '\t' for spaces"""
+    while True:
+        if not re.fullmatch(r"[^@\t ]+@[^@\t ]+\.[^@\t ]+", user_input):
+            print("Not a valid format. q to quit, m for mai menu")
+            print("Retry: ", end=" ")
+            user_input = input()
+            quit_or_menu(user_input)
+        else:
+            return user_input
