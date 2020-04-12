@@ -1,22 +1,21 @@
 #https://www.sqlitetutorial.net/sqlite-python/sqlite-python-select/
 
-#cursor:
-#symbol that indicates the cursor / iterator
+#CURSOR:
+#symbol that indicates the CURSOR / iterator
 #an object used to pinpoint records in a database
 #shows the specific record in the database that is being worked upon
 
-#cursor -> static variable
-#self.cursor -> instance variable
+#CURSOR -> static variable
+#self.CURSOR -> instance variable
 #elements outside methods belong to the class
 
 #used as place holders (?,?,?,?)
-#connection.commit() #save changes to the db
-#connection.close() #close the db
-
+#CONNECTION.commit() #save changes to the db
+#CONNECTION.close() #close the db
+""" functions related to db processing """
 import sqlite3 #import sqlite3 library
-from collections import defaultdict
 
-from members import *
+from members import Member
 from time_functions import *
 
 from modules.func import quit_or_menu
@@ -25,7 +24,6 @@ from modules.func import check_input
 from modules.func import send_to_dict
 from modules.func import from_dict_by_id
 
-from definitions import SHOW_MEMBERS_SQL
 from definitions import VIEW_MEMBER_SQL
 from definitions import SELECT_ALL_SQL
 from definitions import INSERT_SQL
@@ -33,41 +31,33 @@ from definitions import DELETE_MEMBER_SQL
 from definitions import UPDATE_MEMBER_SQL
 from definitions import DELETE_ID_SQL
 
-connection = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
-cursor = connection.cursor()
+CONNECTION = sqlite3.connect('GYM_DATABASE.db') #connect to db/create new otherwise
+CURSOR = CONNECTION.cursor()
 
 
 def run_sql_script(filename, *args):
+    """ execute sql files """
     file = open(filename, 'r')
     sql_file = file.read()
     file.close()
-    cursor.execute(sql_file, *args)
+    CURSOR.execute(sql_file, *args)
 
 def attributes(): #get columns description (member_id, first_name, last_name, ecc)
+    """ get column description from sql db, id name surname ecc """
     run_sql_script(SELECT_ALL_SQL)
-    return [description[0] for description in cursor.description]
+    return [description[0] for description in CURSOR.description]
 
-#def to_dict(): #convert members list to dictionary (to do json later)
-#needs extra work for every member a nested dictionary
-#    run_sql_script(SELECT_ALL_SQL)
-#    rows = cursor.fetchall()
-#
-#    dict_members = dict()
-#    arr = []
-#    descriptions = attributes()
-#
-#
-#    for i in range(0,len(rows)): dict_members[i] = {}
-#
-#    for i in range(0, len(dict_members)):
-#        for description in descriptions:
-#            dict_members[i][description] = None
-#    #print(dict_members)
-#
-#    for i in range(0, len(dict_members)):
-#        print(dict_members[i])
+def get_attributes(arr, att):
+    """ pair column description/attributes with values """
+    att = attributes()
+    print_stars()
+    for elm in arr:
+        for i, element in enumerate(att):
+            print("%s: %s" % (element, elm[i]))
+        print_stars()
 
 def insert_in_db():
+    """ insert member in db """
     first_name = Member.first_name()
     last_name = Member.last_name()
     phone_number = Member.phone_number()
@@ -75,50 +65,55 @@ def insert_in_db():
 
     run_sql_script(INSERT_SQL, (first_name, last_name, phone_number, email, date_format_dmy(), date_end_membership()))
 
-    connection.commit()
-    connection.close()
+    CONNECTION.commit()
+    CONNECTION.close()
 
     print("{0} {1} member added to database on {2} at {3}".format(first_name, last_name, date_format_dmy(), time_format_hm()))
 
-def show_members():
-    run_sql_script(SHOW_MEMBERS_SQL)
-    description = attributes()
-    rows = cursor.fetchall()
-    for row in rows:
-        for i in range(0, len(description)):
-            print("%s: %s" % (description[i], row[i]))
-        print("------------------------------------")
+
+def show_members(): #TO DO modify to get only name surname
+    """ show list of all members """
+    run_sql_script(SELECT_ALL_SQL)
+    rows = CURSOR.fetchall()
+    get_attributes(rows, attributes())
     print("Total members: %d" % len(rows))
 
-
 def update_member(): #TO CHECK IF MEMBER EXISTS ECC
+    """ self explanatory """
     first_name = Member.first_name()
     last_name = Member.last_name()
 
-    run_sql_script(update_member, (first_name, last_name))
-    connection.commit()
-    connection.close()
-    print("Member updated")
+    one_member, plus_member, id_to_del, no_member = member_exists(first_name, last_name)
+    if not no_member:
+        print("Member doesnt exist. q to quit or m for main menu")
+        user_input = input()
+        quit_or_menu(user_input)
+    else:
+        new_first_name = Member.new_first_name()
+        new_last_name = Member.new_last_name()
+        run_sql_script(UPDATE_MEMBER_SQL, (new_first_name, new_last_name, first_name, last_name))
+        CONNECTION.commit()
+        CONNECTION.close()
+        print("Member updated")
 
 def view_member_details(): #SAME AS ABOVE TO CHECK IF MEMBER EXISTS ECC
+    """ self explanatory """
     first_name = Member.first_name()
     last_name = Member.last_name()
 
     run_sql_script(VIEW_MEMBER_SQL, (first_name, last_name))
-    rows = cursor.fetchall()
-    descriptions = attributes()
-    for row in rows:
-        for i in range(0, len(descriptions)):
-            print("%s: %s" % (descriptions[i], row[i]))
-        print("---------------------------------------")
+    rows = CURSOR.fetchall()
+    get_attributes(rows, attributes())
 
 def member_exists(first_name, last_name):
+    """ main func to check if a member exists, inner func descriptions below """
 
     def members_array_id():
+        """ add all members in array with a separate member id array """
         member_id = []
 
         run_sql_script(VIEW_MEMBER_SQL, (first_name, last_name))
-        members = cursor.fetchall()
+        members = CURSOR.fetchall()
 
         for member in members:
             member_id.append(member[0])
@@ -126,26 +121,20 @@ def member_exists(first_name, last_name):
         return members, member_id
     members, member_id = members_array_id()
 
-    def get_attributes():
-        description = attributes()
-        print_stars()
-        for member in members:
-            for i in range(0, len(description)):
-                print("%s: %s" % (description[i], member[i]))
-            print_stars()
-
     def one_member():
+        """ check if only 1 hit found """
         one_member = False
         if len(member_id) == 1: one_member = True
         return one_member
     one_member = one_member()
 
     def plus_member():
+        """ check if more than one member with same name and surname, return with id to delete """
         plus_member = False
         id_to_del = None
         if len(member_id) > 1:
             print("More than 1 member found.")
-            get_attributes()
+            get_attributes(members, attributes())
             print("Type member's ID to delete. Select %s | " % member_id)
             user_input = input()
             id_to_del = check_input(user_input, member_id)
@@ -156,14 +145,16 @@ def member_exists(first_name, last_name):
     plus_member, id_to_del = plus_member()
 
     def no_member():
+        """ evaluates to True if member not in db """
         no_member = False
-        if len(member_id) == 0: no_member = True
+        if member_id: no_member = True
         return no_member
     no_member = no_member()
 
     return one_member, plus_member, id_to_del, no_member
 
 def delete_member():
+    """ self explanatory """
     first_name = Member.first_name()
     last_name = Member.last_name()
     print_stars()
@@ -177,10 +168,11 @@ def delete_member():
         print("Member deleted")
     if no_member:
         print("No member found, check your spelling. [q to quit, m for main menu]")
-        quit_or_menu(user_input = input())
+        quit_or_menu(user_input=input())
 
-    connection.commit()
-    connection.close()
+    CONNECTION.commit()
+    CONNECTION.close()
 
 def expired_memberships(): pass
+
 def soon_to_expire(): pass
