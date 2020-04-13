@@ -26,9 +26,8 @@ def check_input(user_input, array):
         if int(user_input) not in array:
             print("Invalid input. Retry")
             user_input = input()
-        else:
-            return user_input
-            #flag = False
+            continue
+        else: return user_input
 
 #desc => description, use as keys in dict
 #arr => members list from sql

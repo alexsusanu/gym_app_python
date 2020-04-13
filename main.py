@@ -2,7 +2,7 @@
 
 from menu import *
 from modules.db import *
-from definitions import CREATE_TABLE_SQL
+from modules.class_run_sql import *
 
 run_sql_script(CREATE_TABLE_SQL)
 Menu()

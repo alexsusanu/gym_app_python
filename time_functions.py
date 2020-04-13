@@ -12,11 +12,11 @@ date = datetime.datetime.now()
 date_30 = date + datetime.timedelta(days=30)
 time = datetime.datetime.now()
 
-def date_format_dmy():
-    return date.strftime("%a %d-%B-%Y")
+#def date_format_dmy():
+#    return date.strftime("%a %d-%B-%Y")
 
-def date_end_membership():
-    return date_30.strftime("%a %d-%B-%Y")
+#def date_end_membership():
+#    return date_30.strftime("%a %d-%B-%Y")
 
-def time_format_hm():
-    return datetime.datetime.now().strftime("%I:%M %p")
+def time_imp():
+    return time.strftime("%I:%M %p")

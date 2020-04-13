@@ -8,6 +8,7 @@
 from modules.func import check_alpha
 from modules.func import check_digit
 from modules.func import check_email
+from modules.func import print_stars
 
 class Member: #a category of things that have common properties
     #def __init__(self, first_name, last_name, phone_number, email):
@@ -41,14 +42,16 @@ class Member: #a category of things that have common properties
         return check_email(user_input)
 
     @staticmethod
-    def new_first_name():
-        print("Insert new last name: ", end=" ")
-        user_input = input()
-        return check_alpha(user_input)
+    def ask_details():
+        print_stars()
+        first = Member.first_name()
+        last = Member.last_name()
+        phone = Member.phone_number()
+        email = Member.email()
+        return first, last, phone, email
 
     @staticmethod
-    def new_last_name():
-        print("Insert new last name: ", end=" ")
-        user_input = input()
-        return check_alpha(user_input)
-
+    def ask_name():
+        first = Member.first_name()
+        last = Member.last_name()
+        return first, last
