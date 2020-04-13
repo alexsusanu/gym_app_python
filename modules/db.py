@@ -27,7 +27,7 @@ from modules.func import send_to_dict
 from modules.func import from_dict_by_id
 from modules.func import yes_no
 from modules.class_member_func import MemberFunc
-from modules.class_run_sql import run_sql_script, attributes, run_select_all, run_select_name, run_update, run_insert
+from modules.class_run_sql import run_sql_script, attributes, run_select_all, run_select_name, run_update, run_insert, run_view, run_del
 
 def com_close(): #to add error checking
     """ commit and close db """
@@ -77,34 +77,35 @@ def update_member():
         run_update(first_name, last_name, id_to_del)
         com_close()
 
-def view_member_details(): #SAME AS ABOVE TO CHECK IF MEMBER EXISTS ECC
+def view_member_details():
     """ self explanatory """
     first, last = Member.ask_name()
+    to_be_or_not = MemberFunc(first, last) 
 
-    run_sql_script(VIEW_MEMBER_SQL, (first_name, last_name))
-    rows = CURSOR.fetchall()
-    get_attributes(rows, attributes())
-
+    if not to_be_or_not.already_member():
+        print("Member doesnt exist. q to quit or m for main menu")
+        user_input = input()
+        quit_or_menu(user_input)
+    else:
+        to_be_or_not.view_matches()
 
 def delete_member():
     """ self explanatory """
-    first_name = Member.first_name()
-    last_name = Member.last_name()
+    first, last = Member.ask_name()
     print_stars()
 
-    one_member, plus_member, id_to_del, no_member = member_exists(first_name, last_name)
-    if plus_member:
-        run_sql_script(DELETE_ID_SQL, (id_to_del,))
-        print("Member deleted")
-    if one_member:
-        run_sql_script(DELETE_MEMBER_SQL, (first_name, last_name))
-        print("Member deleted")
-    if no_member:
-        print("No member found, check your spelling. [q to quit, m for main menu]")
-        quit_or_menu(user_input=input())
+    to_be_or_not = MemberFunc(first, last) 
 
-    CONNECTION.commit()
-    CONNECTION.close()
+    if not to_be_or_not.already_member():
+        print("Member doesnt exist. q to quit or m for main menu")
+        user_input = input()
+        quit_or_menu(user_input)
+    else:
+        to_be_or_not.view_matches()
+        id_to_del = to_be_or_not.id_to_del()
+        run_del(id_to_del)
+        com_close()
+
 
 def expired_memberships(): pass
 

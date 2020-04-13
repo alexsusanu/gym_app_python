@@ -3,6 +3,7 @@ from definitions import CONNECTION, CURSOR
 
 from modules.class_run_sql import run_sql_script, attributes, get_attributes
 from modules.func import check_input, send_to_dict, from_dict_by_id
+from members import Member
 
 class MemberFunc():
     """ check member exists or not functions """
@@ -25,8 +26,7 @@ class MemberFunc():
 
     def view_matches(self):
         """return True and list if matches found / False otherwise """
-        if len(self.member_id) > 1:
-            print("More than 1 match found")
+        if len(self.member_id) >= 1:
             print("Here are all the matches found")
             get_attributes(self.members, attributes())
             return True
